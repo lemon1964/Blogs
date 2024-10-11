@@ -69,13 +69,13 @@ npm run test
   "scripts": {
     "build:ui": "npm run build:client && cd client && cp -r dist ../",
     "deploy:full": "npm run build:ui && git add . && git commit -m 'Deploy build' && git push",
-
+----------
 "scripts": {
-  "build:client": "vite build",
-  "build:ui": "cd client && npm run build:client && cp -r dist ../",
-  "deploy:full": "npm run build:ui && git add . && git commit -m 'Deploy build' && git push",
-  "dev:server": "nodemon server/app.js"
+  "build:client": "vite build",  // Сборка клиента происходит на основе root в vite.config.js
+  "build:ui": "npm run build:client && git add . && git commit -m 'Deploy client build'",
+  "deploy:full": "npm run build:ui && git push",
 }
+
 
 
 git init .
@@ -86,9 +86,8 @@ git commit -m "Initial commit"
 git branch -M main
 git push -u origin main
 
+npm run deploy:full
 
-  "scripts": {
-    "build:client": "vite build",
 
 
 

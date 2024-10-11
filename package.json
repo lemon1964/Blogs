@@ -14,8 +14,8 @@
     "lint": "eslint . --ext .js,.jsx --report-unused-disable-directives --max-warnings 0",
 
     "build:client": "vite build",
-    "build:ui": "npm run build:client && cd client && cp -r dist ../",
-    "deploy:full": "npm run build:ui && git add . && git commit -m 'Deploy build' && git push"
+    "build:ui": "npm run build:client && git add . && git commit -m 'Deploy client build'",
+    "deploy:full": "npm run build:ui && git push"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
