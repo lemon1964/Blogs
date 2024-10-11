@@ -92,9 +92,17 @@ git add .
 git commit -m "Update .gitignore and remove unnecessary files"
 git push
 
-
-
 npm run deploy:full
+npm run dev:
+
+app.get('/health', (req, res) => {
+  res.send('Health is fine!')
+})
+// app.get('/health', (req, res) => {
+//   // eslint-disable-next-line no-constant-condition
+//   if (true) throw('error...  ')
+//   res.send('ok')
+// })
 
 
 
