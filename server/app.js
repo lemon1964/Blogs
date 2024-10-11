@@ -11,6 +11,9 @@ const commentsRouter = require('./controllers/comments')
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 
+const path = require('path');
+
+
 mongoose.set('strictQuery', false)
 mongoose
   .connect(config.MONGODB_URI)
@@ -26,7 +29,14 @@ app.use(express.json())
 app.use(middleware.morgan('combined'))
 app.use(middleware.tokenExtractor)
 
-app.use(express.static('dist'));
+// Используем express для отдачи статических файлов
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Обрабатываем маршруты, которые не начинаются с /api
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
+// app.use(express.static('dist'));
 
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)

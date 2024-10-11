@@ -59,32 +59,40 @@ rm -rf e2e
 rm -rf tests-examples
 
 npm run test
+--------------------------
 
 Сборка в продакшен
-Скрипт для сборки фронтэенда
-  "scripts": {
     "build:client": "vite build",
+    "build:ui": "npm run build:client && git add . && git commit -m 'Deploy client build'",
+    "deploy:full": "npm run build:ui && git push"
 
-Скрипт для сборки бэкенда
-  "scripts": {
-    "build:ui": "npm run build:client && cd client && cp -r dist ../",
-    "deploy:full": "npm run build:ui && git add . && git commit -m 'Deploy build' && git push",
-----------
-"scripts": {
-  "build:client": "vite build",  // Сборка клиента происходит на основе root в vite.config.js
-  "build:ui": "npm run build:client && git add . && git commit -m 'Deploy client build'",
-  "deploy:full": "npm run build:ui && git push",
-}
-
+const path = require('path');
+// Используем express для отдачи статических файлов
+app.use(express.static(path.join(__dirname, 'public')));
+// Обрабатываем маршруты, которые не начинаются с /api
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
+});
 
 
 git init .
+.gitignore
 Делаем новый репозиторий Blogs на гитхаб
 git remote add origin https://github.com/lemon1964/Blogs.git
 git add .
 git commit -m "Initial commit"
 git branch -M main
 git push -u origin main
+
+git rm --cached .env
+git rm --cached .DS_Store
+git rm --cached -r client/public
+git rm --cached server/.DS_Store
+git add .
+git commit -m "Update .gitignore and remove unnecessary files"
+git push
+
+
 
 npm run deploy:full
 
