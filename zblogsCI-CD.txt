@@ -1,0 +1,95 @@
+Делаю папку Blogs.
+Копирую папку blogs_backend в папку Blogs.
+Переименовываю папку blogs_backend в server.
+server/package.json
+ "name": "server",
+
+cd server
+npm run dev
+
+Копирую папку blogs_redux в папку Blogs.
+Переименовываю папку blogs_redux в client.
+server/package.json
+ "name": "client",
+
+cd client
+npm run dev
+
+Общий package.json
+cd Blogs
+npm install
+
+Переносим в корень .env
+
+npm run dev:server      ОК
+npm run dev:client      ОК
+
+.eslintrc.cjs
+npm install --save-dev eslint eslint-plugin-react eslint-plugin-react-refresh eslint-plugin-vitest eslint-plugin-prettier @eslint/js @stylistic/eslint-plugin-js prettier
+
+  "lint": "eslint . --ext .js,.jsx --report-unused-disable-directives --max-warnings 0"
+
+npm run lint
+npx prettier --write .
+npm run lint -- --fix
+        npx eslint . --ext .js,.jsx --fix
+
+    "test:server": "cross-env NODE_ENV=test node --test server/tests",
+    "test:client": "vitest run",
+
+npm run test:server     ОК
+npm run test:client     ОК
+
+npm init playwright@latest
+
+"scripts": {
+  "test:e2e": "npx playwright test tests/playwright",
+  "test:report": "playwright show-report"
+}
+
+tests/playwright/front-page.spec.js
+
+module.exports = defineConfig({
+  testDir: './tests',
+
+npm run test:e2e -- --project chromium
+npx playwright codegen http://localhost:5173/
+
+rm -rf e2e
+rm -rf tests-examples
+
+npm run test
+
+Сборка в продакшен
+Скрипт для сборки фронтэенда
+  "scripts": {
+    "build:client": "vite build",
+
+Скрипт для сборки бэкенда
+  "scripts": {
+    "build:ui": "npm run build:client && cd client && cp -r dist ../",
+    "deploy:full": "npm run build:ui && git add . && git commit -m 'Deploy build' && git push",
+
+"scripts": {
+  "build:client": "vite build",
+  "build:ui": "cd client && npm run build:client && cp -r dist ../",
+  "deploy:full": "npm run build:ui && git add . && git commit -m 'Deploy build' && git push",
+  "dev:server": "nodemon server/app.js"
+}
+
+
+git init .
+Делаем новый репозиторий Blogs на гитхаб
+git remote add origin https://github.com/lemon1964/Blogs.git
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git push -u origin main
+
+
+  "scripts": {
+    "build:client": "vite build",
+
+
+
+
