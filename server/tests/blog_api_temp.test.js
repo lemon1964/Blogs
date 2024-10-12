@@ -48,6 +48,20 @@ describe('Backend testing', () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
     })
+
+    test('all blogs are returned', async () => {
+      const response = await api.get('/api/blogs')
+      assert.strictEqual(response.body.length, helper.initialBlogs.length)
+    })
+
+    test('blog post id is database _id', async () => {
+      const response = await api.get('/api/blogs')
+
+      response.body.forEach((blog) => {
+        assert.strictEqual(blog.id !== undefined, true)
+        assert.strictEqual(blog._id, undefined)
+      })
+    })
   })
 
   // Always last test to close the database connection
