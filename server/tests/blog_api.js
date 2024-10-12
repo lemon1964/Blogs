@@ -282,92 +282,92 @@ describe('Backend testing', () => {
     })
   })
 
-  // describe('if queries are missing fields', () => {
-  //   test('if likes is missing, default value is 0', async () => {
-  //     await User.deleteMany({})
+  describe('if queries are missing fields', () => {
+    test('if likes is missing, default value is 0', async () => {
+      await User.deleteMany({})
 
-  //     const newUser = {
-  //       username: 'bob',
-  //       name: 'pickachu',
-  //       password: 'devil'
-  //     }
+      const newUser = {
+        username: 'bob',
+        name: 'pickachu',
+        password: 'devil'
+      }
 
-  //     await api
-  //       .post('/api/users')
-  //       .send(newUser)
-  //       .expect(201)
-  //       .expect('Content-Type', /application\/json/)
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
-  //     const usersAtEnd = await helper.usersInDb()
-  //     const userInDb = usersAtEnd[0]
+      const usersAtEnd = await helper.usersInDb()
+      const userInDb = usersAtEnd[0]
 
-  //     const token = jwt.sign(
-  //       { username: userInDb.username, id: userInDb.id },
-  //       config.SECRET
-  //     )
-  //     const decodedToken = jwt.verify(token, config.SECRET)
+      const token = jwt.sign(
+        { username: userInDb.username, id: userInDb.id },
+        config.SECRET
+      )
+      const decodedToken = jwt.verify(token, config.SECRET)
 
-  //     const user = await User.findOne({ username: decodedToken.username })
+      const user = await User.findOne({ username: decodedToken.username })
 
-  //     const newBlog = {
-  //       title: 'Testing for absence of likes',
-  //       author: 'Supertest',
-  //       url: 'http://www.supertest.com',
-  //       user: user._id
-  //     }
+      const newBlog = {
+        title: 'Testing for absence of likes',
+        author: 'Supertest',
+        url: 'http://www.supertest.com',
+        user: user._id
+      }
 
-  //     await api
-  //       .post('/api/blogs')
-  //       .set('Authorization', `Bearer ${token}`)
-  //       .send(newBlog)
-  //       .expect(201)
-  //       .expect('Content-Type', /application\/json/)
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
-  //     const blogsAtEnd = await helper.blogsInDb()
-  //     const blog = blogsAtEnd.find(
-  //       (blog) => blog.title === 'Testing for absence of likes'
-  //     )
+      const blogsAtEnd = await helper.blogsInDb()
+      const blog = blogsAtEnd.find(
+        (blog) => blog.title === 'Testing for absence of likes'
+      )
 
-  //     assert.strictEqual(blog.likes, 0)
-  //   })
+      assert.strictEqual(blog.likes, 0)
+    })
 
-  //   test('if title or url is missing, return status code 400', async () => {
-  //     await User.deleteMany({})
+    test('if title or url is missing, return status code 400', async () => {
+      await User.deleteMany({})
 
-  //     const newUser = {
-  //       username: 'bob',
-  //       name: 'pickachu',
-  //       password: 'devil'
-  //     }
+      const newUser = {
+        username: 'bob',
+        name: 'pickachu',
+        password: 'devil'
+      }
 
-  //     await api
-  //       .post('/api/users')
-  //       .send(newUser)
-  //       .expect(201)
-  //       .expect('Content-Type', /application\/json/)
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
-  //     const usersAtEnd = await helper.usersInDb()
-  //     const userInDb = usersAtEnd[0]
+      const usersAtEnd = await helper.usersInDb()
+      const userInDb = usersAtEnd[0]
 
-  //     const token = jwt.sign(
-  //       { username: userInDb.username, id: userInDb.id },
-  //       config.SECRET
-  //     )
-  //     const decodedToken = jwt.verify(token, config.SECRET)
+      const token = jwt.sign(
+        { username: userInDb.username, id: userInDb.id },
+        config.SECRET
+      )
+      const decodedToken = jwt.verify(token, config.SECRET)
 
-  //     const user = await User.findOne({ username: decodedToken.username })
+      const user = await User.findOne({ username: decodedToken.username })
 
-  //     const newBlog = {
-  //       author: 'Supertest',
-  //       user: user._id
-  //     }
-  //     await api
-  //       .post('/api/blogs')
-  //       .set('Authorization', `Bearer ${token}`)
-  //       .send(newBlog)
-  //       .expect(400)
-  //   })
-  // })
+      const newBlog = {
+        author: 'Supertest',
+        user: user._id
+      }
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(400)
+    })
+  })
 
   // describe('when there is initially one user in db', () => {
   //   beforeEach(async () => {
