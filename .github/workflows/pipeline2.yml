@@ -36,7 +36,6 @@ jobs:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           PORT: ${{ secrets.PORT }}
           SECRET: ${{ secrets.SECRET }}
-          background: true
 
       - name: Check environment variables
         run: |
@@ -45,6 +44,12 @@ jobs:
           echo "TEST_MONGODB_URI=$TEST_MONGODB_URI"
           echo "PORT=$PORT"
           echo "SECRET=$SECRET"
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
 
       - name: Wait for server to start
         run: |
@@ -52,8 +57,13 @@ jobs:
             echo "Waiting for server to start..."
             sleep 5
           done
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
 
-      # Шаг для проверки, правильно ли подключен MongoDB
       - name: Check MongoDB connection
         run: |
           if curl -s http://localhost:3003/health; then
@@ -61,12 +71,30 @@ jobs:
           else
             echo "MongoDB connection failed"
           fi
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
 
       - name: Debug server logs
         run: |
           echo "Checking server logs..."
           cat logs/server.log || echo "No server logs found"
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
 
       - name: Test Server
         run: npm run test:server
         id: test-check-server
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
