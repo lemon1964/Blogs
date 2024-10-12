@@ -13,38 +13,25 @@ on:
 
 
 jobs:
-  hello_world_job:
+  simple_deployment_pipeline:
     runs-on: ubuntu-20.04
     steps:
-      - name: Say hello
-        run: |
-          echo "Hello World!"
-      - name: Now it is
-        run: |
-          date
-      - name: Directory content
-        run: |
-          ls -l
-# jobs:
-#   simple_deployment_pipeline:
-#     runs-on: ubuntu-20.04
-#     steps:
-#       - uses: actions/checkout@v4
-#       - uses: actions/setup-node@v4
-#         with:
-#           node-version: "20"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
 
-#       - name: Install dependencies
-#         run: npm install
+      - name: Install dependencies
+        run: npm install
 
     #   - name: Lint
     #     run: npm run lint
     #     id: lint-check
 
-      # - name: Build
-      #   run: npm run build:client
-      #   id: build-check
-      #   continue-on-error: true
+      - name: Build
+        run: npm run build:client
+        id: build-check
+        continue-on-error: true
 
     #   - name: Build Failure Notification
     #     if: steps.build-check.outcome == 'failure'
@@ -96,9 +83,15 @@ jobs:
       #       sleep 5
       #     done
 
-      # - name: Test Server
-      #   run: npm run test:server
-      #   id: test-check-server
+      - name: Test Server
+        run: npm run test:server
+        id: test-check-server
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
 
     #   - name: Playwright tests
     #     run: npm run test:e2e
