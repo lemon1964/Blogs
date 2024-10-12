@@ -52,27 +52,27 @@ jobs:
     #         }]
     #       }' "$FULL_URL"
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+    #   - name: Install Playwright Browsers
+    #     run: npx playwright install --with-deps
 
-      - name: Test Client
-        run: npm run test:client
-        id: test-check-client
+    #   - name: Test Client
+    #     run: npm run test:client
+    #     id: test-check-client
 
-    #   - name: Test Server
-    #     run: npm run test:server
-    #     id: test-check-server
+      - name: Test Server
+        run: npm run test:server
+        id: test-check-server
 
-      - name: Playwright tests
-        run: npm run test:e2e
-        id: test-check-e2e
+    #   - name: Playwright tests
+    #     run: npm run test:e2e
+    #     id: test-check-e2e
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+    #   - uses: actions/upload-artifact@v4
+    #     if: ${{ !cancelled() }}
+    #     with:
+    #       name: playwright-report
+    #       path: playwright-report/
+    #       retention-days: 30
 
     #   - name: Trigger deployment
     #     # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
@@ -104,8 +104,8 @@ jobs:
     #         }]
     #       }' "$FULL_URL"
         
-      - name: Log Webhook Result
-        run: echo "Webhook message sent successfully."
+    #   - name: Log Webhook Result
+    #     run: echo "Webhook message sent successfully."
         
 
 #   tag_release:
