@@ -59,6 +59,8 @@ rm -rf e2e
 rm -rf tests-examples
 
 npm run test
+npm run lint
+npm run lint -- --fix
 --------------------------
 
 Сборка в продакшен
@@ -93,7 +95,7 @@ git commit -m "Update .gitignore and remove unnecessary files"
 git push
 
 npm run deploy:full
-npm run dev:
+npm run dev:server
 
 app.get('/health', (req, res) => {
   res.send('Health is fine!')
@@ -107,4 +109,25 @@ app.get('/health', (req, res) => {
 
 
 
+  "scripts": {
+    "dev:server": "cross-env NODE_ENV=development nodemon server/index.js",
+    "test:server": "cross-env NODE_ENV=test node --test server/tests",
+    "dev:client": "vite",
+    "test:client": "vitest run",
+    "test:e2e": "npx playwright test tests/playwright",
+    "test:report": "playwright show-report",
+    "test": "npm run test:server && npm run test:client && npm run test:e2e",
+    "lint": "eslint . --ext .js,.jsx --report-unused-disable-directives --max-warnings 0",
+    "build:client": "vite build",
+    "build:ui": "npm run build:client && git add . && git commit -m 'Deploy client build'",
+    "deploy:full": "npm run build:ui && git push"
+  },
 
+
+
+
+npm run deploy:full
+npm run dev:server
+npm run test
+npm run lint
+npm run lint -- --fix

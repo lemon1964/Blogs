@@ -36,5 +36,5 @@ module.exports = {
     'react/prop-types': 'off',
     'no-unused-vars': 'off'
   },
-  ignorePatterns: ['dist', 'build', 'node_modules'] // Игнорируемые директории
+  ignorePatterns: ['dist', 'build', 'node_modules', 'public']
 }
