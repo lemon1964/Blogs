@@ -4,7 +4,8 @@ describe('Blogs', () => {
   test('front page can be opened after login and displays blogs app', async ({
     page
   }) => {
-    await page.goto('http://localhost:5173/')
+    await page.goto('')
+    // await page.goto('http://localhost:5173/')
     await page.getByRole('button', { name: 'login' }).click()
     await page.locator('input[type="text"]').click()
     await page.locator('input[type="text"]').fill('')
