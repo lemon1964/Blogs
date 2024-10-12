@@ -46,7 +46,7 @@ describe('Backend testing', () => {
       await api
         .get('/api/blogs')
         .expect(200)
-        // .expect('Content-Type', /application\/json/)
+        .expect('Content-Type', /application\/json/)
     })
   })
 
@@ -58,6 +58,7 @@ describe('Backend testing', () => {
   //   await mongoose.connection.close()
   //   console.log('Database connection closed.')
   // })
+
 })
 
 after(async () => {
