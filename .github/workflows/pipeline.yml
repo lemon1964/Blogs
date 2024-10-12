@@ -88,10 +88,10 @@ jobs:
         id: test-check-server
         env:
           NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+          # MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          # TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          # PORT: ${{ secrets.PORT }}
+          # SECRET: ${{ secrets.SECRET }}
 
     #   - name: Playwright tests
     #     run: npm run test:e2e
