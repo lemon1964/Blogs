@@ -74,11 +74,11 @@ jobs:
         # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
-      - name: Deploy to Render
-        # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        run: |
-          echo "Deploying to Render"
-          git push https://github.com/lemon1964/Blogs.git HEAD:main
+    #   - name: Deploy to Render
+    #     if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+    #     run: |
+    #       echo "Deploying to Render"
+    #       git push https://github.com/lemon1964/Blogs.git HEAD:main
 
     #   - name: Send Discord Notification on Successful Deployment
     #     if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
