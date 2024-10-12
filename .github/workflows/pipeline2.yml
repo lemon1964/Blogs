@@ -25,15 +25,14 @@ jobs:
         id: build-check
         continue-on-error: true
 
-      - name: Test Server
-        run: npm run test:server
+      - name: Start Server
+        run: npm run dev:server &
         env:
           NODE_ENV: test
-          MONGODB_URI: "mongodb+srv://sv444444:9Bi5d2aO0ZKYtF0n@fullstack.gbitkdt.mongodb.net/testBlogApp?retryWrites=true&w=majority&appName=fullstack"
-          TEST_MONGODB_URI: "mongodb+srv://sv444444:9Bi5d2aO0ZKYtF0n@fullstack.gbitkdt.mongodb.net/testBlogApp?retryWrites=true&w=majority&appName=fullstack"
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           PORT: ${{ secrets.PORT }}
           SECRET: ${{ secrets.SECRET }}
-      
 
       - name: Check environment variables
         run: |
@@ -97,6 +96,6 @@ jobs:
           PORT: ${{ secrets.PORT }}
           SECRET: ${{ secrets.SECRET }}
 
-      - name: Test Server
-        run: npm run test:server
 
+
+        
