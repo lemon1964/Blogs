@@ -69,11 +69,11 @@ jobs:
         run: npm run dev:server &
         env:
           NODE_ENV: test
-          # MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          # PORT: ${{ secrets.PORT }}
-          # SECRET: ${{ secrets.SECRET }}
-          # background: true
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
+          background: true
         
 
       # - name: Wait for server to start
@@ -83,15 +83,15 @@ jobs:
       #       sleep 5
       #     done
 
-      # - name: Test Server
-      #   run: npm run test:server
-      #   id: test-check-server
-      #   env:
-      #     NODE_ENV: test
-      #     # MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      #     TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-      #     # PORT: ${{ secrets.PORT }}
-      #     # SECRET: ${{ secrets.SECRET }}
+      - name: Test Server
+        run: npm run test:server
+        id: test-check-server
+        env:
+          NODE_ENV: test
+          # MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          # PORT: ${{ secrets.PORT }}
+          # SECRET: ${{ secrets.SECRET }}
 
     #   - name: Playwright tests
     #     run: npm run test:e2e
