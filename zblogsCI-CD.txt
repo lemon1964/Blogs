@@ -144,7 +144,31 @@ Free
 Environment Variables
 из файла .env
 
-Нажимаю Deploy Web Service
+Нажимаю Deploy Web Service        ОК
+Auto-Deploy    NO
+
+Автоматическое развертывание
+с помощью Render Deploy Hook
+Deploy hook
+https://api.render.com/deploy/srv-cs4tapi3esus73am15m0?key=9Nl7kfGQJTo
+
+секреты GitHub для вашего ключа и идентификатора сервиса
+https://github.com/lemon1964/full-stack-open-pokedex/settings
+Secrets and Variables - Actions - Repository secrets    - Нажимаю  
+RENDER_API_KEY
+9Nl7kfGQJTo
+RENDER_SERVICE_ID
+cs4tapi3esus73am15m0
+
+-------------------------------
+.github/workflows/hello.yml
+git add .github/workflows/hello.yml
+git commit -m "Add Hello World GitHub Actions workflow"
+git push origin main
+
+.github/workflows/pipeline.yml
+npm run deploy:full
+
 
 
 
