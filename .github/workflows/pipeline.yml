@@ -71,11 +71,11 @@ jobs:
           retention-days: 30
 
       - name: Trigger deployment
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
       - name: Deploy to Render
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
         run: |
           echo "Deploying to Render"
           git push https://github.com/lemon1964/Blogs.git HEAD:main
