@@ -52,11 +52,12 @@ jobs:
     #         }]
     #       }' "$FULL_URL"
 
-    #   - name: Install Playwright Browsers
-    #     run: npx playwright install --with-deps
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
 
       - name: Test
-        run: npm run test:client
+        run: npm run test:e2e
+        # run: npm run test:client
         # run: npm run test
         id: test-check
 
@@ -71,9 +72,9 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
-      - name: Trigger deployment
-        # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+    #   - name: Trigger deployment
+    #     # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+    #     run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
     #   - name: Deploy to Render
     #     if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
