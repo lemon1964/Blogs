@@ -1,4 +1,4 @@
-const { test, after, beforeEach, describe } = require('node:test')
+const { test, after, beforeEach, describe, before } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -12,6 +12,23 @@ const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
 require('events').setMaxListeners(20) // Increasing listener limit for "creation succeeds with a fresh username" test
 
+describe('Backend testing', () => {
+
+  // Подключение к базе данных перед выполнением тестов
+  before(async () => {
+    try {
+      await mongoose.connect(process.env.TEST_MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 30000,
+        socketTimeoutMS: 45000,
+      });
+      console.log('Connected to MongoDB');
+    } catch (error) {
+      console.error('Error connecting to MongoDB:', error.message);
+      throw error; // выбрасываем ошибку, чтобы тесты не продолжались без соединения с БД
+    }
+  });
 describe('Backend testing', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
@@ -470,14 +487,14 @@ describe('Backend testing', () => {
   //   })
   // })
 
-  // Always last test to close the database connection
-  test('zz_close database connection', async () => {
-    console.log('Closing database connection...')
-    await User.deleteMany({})
-    console.log('users deleted.')
-    await mongoose.connection.close()
-    console.log('Database connection closed.')
-  })
+  // // Always last test to close the database connection
+  // test('zz_close database connection', async () => {
+  //   console.log('Closing database connection...')
+  //   await User.deleteMany({})
+  //   console.log('users deleted.')
+  //   await mongoose.connection.close()
+  //   console.log('Database connection closed.')
+  // })
 })
 
 after(async () => {
@@ -493,3 +510,5 @@ after(async () => {
 // after(async () => {
 //   await mongoose.connection.close()
 // })
+
+})
