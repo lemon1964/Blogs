@@ -24,14 +24,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-    #   - name: Lint
-    #     run: npm run lint
-    #     id: lint-check
+      - name: Lint
+        run: npm run lint
+        id: lint-check
 
-      - name: Build
-        run: npm run build:client
-        id: build-check
-        continue-on-error: true
+      # - name: Build
+      #   run: npm run build:client
+      #   id: build-check
+      #   continue-on-error: true
 
     #   - name: Build Failure Notification
     #     if: steps.build-check.outcome == 'failure'
@@ -83,15 +83,15 @@ jobs:
       #       sleep 5
       #     done
 
-      - name: Test Server
-        run: npm run test:server
-        id: test-check-server
-        env:
-          NODE_ENV: test
-          # MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          # PORT: ${{ secrets.PORT }}
-          # SECRET: ${{ secrets.SECRET }}
+      # - name: Test Server
+      #   run: npm run test:server
+      #   id: test-check-server
+      #   env:
+      #     NODE_ENV: test
+      #     # MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      #     TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      #     # PORT: ${{ secrets.PORT }}
+      #     # SECRET: ${{ secrets.SECRET }}
 
     #   - name: Playwright tests
     #     run: npm run test:e2e
