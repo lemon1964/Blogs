@@ -65,15 +65,15 @@ jobs:
     #     with:
     #       mongodb-version: '5.0'
 
-      # - name: Start Server
-      #   run: npm run dev:server &
-      #   env:
-      #     NODE_ENV: test
-      #     MONGODB_URI: ${{ secrets.MONGODB_URI }}
-      #     TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-      #     PORT: ${{ secrets.PORT }}
-      #     SECRET: ${{ secrets.SECRET }}
-      #     background: true
+      - name: Start Server
+        run: npm run dev:server &
+        env:
+          NODE_ENV: test
+          # MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          # PORT: ${{ secrets.PORT }}
+          # SECRET: ${{ secrets.SECRET }}
+          # background: true
         
 
       # - name: Wait for server to start
