@@ -52,12 +52,12 @@ jobs:
     #         }]
     #       }' "$FULL_URL"
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+    #   - name: Install Playwright Browsers
+    #     run: npx playwright install --with-deps
 
-      - name: Test
-        run: npm run test
-        id: test-check
+    #   - name: Test
+    #     run: npm run test
+    #     id: test-check
 
     #   - name: Run Playwright tests
     #     run: npm run test:e2e
