@@ -1,0 +1,72 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+env:
+  SKIP_DEPLOYMENT: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
+
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build:client
+        id: build-check
+        continue-on-error: true
+
+      - name: Start Server
+        run: npm run dev:server &
+        env:
+          NODE_ENV: test
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          SECRET: ${{ secrets.SECRET }}
+          background: true
+
+      - name: Check environment variables
+        run: |
+          echo "NODE_ENV=$NODE_ENV"
+          echo "MONGODB_URI=$MONGODB_URI"
+          echo "TEST_MONGODB_URI=$TEST_MONGODB_URI"
+          echo "PORT=$PORT"
+          echo "SECRET=$SECRET"
+
+      - name: Wait for server to start
+        run: |
+          until curl -s http://localhost:3003/health; do
+            echo "Waiting for server to start..."
+            sleep 5
+          done
+
+      # Шаг для проверки, правильно ли подключен MongoDB
+      - name: Check MongoDB connection
+        run: |
+          if curl -s http://localhost:3003/health; then
+            echo "MongoDB connection successful"
+          else
+            echo "MongoDB connection failed"
+          fi
+
+      - name: Debug server logs
+        run: |
+          echo "Checking server logs..."
+          cat logs/server.log || echo "No server logs found"
+
+      - name: Test Server
+        run: npm run test:server
+        id: test-check-server
