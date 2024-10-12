@@ -169,6 +169,11 @@ git push origin main
 .github/workflows/pipeline.yml
 npm run deploy:full
 
+git add .
+git commit -m "Changes"
+git push
+git push origin main
+
 
 
 
