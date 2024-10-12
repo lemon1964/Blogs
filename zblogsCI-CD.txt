@@ -105,29 +105,54 @@ app.get('/health', (req, res) => {
 //   if (true) throw('error...  ')
 //   res.send('ok')
 // })
+-----------------------
+На Рендере:
+New	Web service 
 
+PR Previews and Auto-Deploy are available only for repositories configured with render.yaml
+https://github.com/lemon1964/Blogs.git
 
+Name
+Blogs
 
+ProjectOptional
+Add this web service to a project once it’s created.
+Пропускаю
 
-  "scripts": {
-    "dev:server": "cross-env NODE_ENV=development nodemon server/index.js",
-    "test:server": "cross-env NODE_ENV=test node --test server/tests",
-    "dev:client": "vite",
-    "test:client": "vitest run",
-    "test:e2e": "npx playwright test tests/playwright",
-    "test:report": "playwright show-report",
-    "test": "npm run test:server && npm run test:client && npm run test:e2e",
-    "lint": "eslint . --ext .js,.jsx --report-unused-disable-directives --max-warnings 0",
-    "build:client": "vite build",
-    "build:ui": "npm run build:client && git add . && git commit -m 'Deploy client build'",
-    "deploy:full": "npm run build:ui && git push"
-  },
+Language
+Node
+
+Branch
+main
+
+Region
+Oregon(US West)
+
+Root DirectoryOptional
+Оставляю по умолчанию 
+e. g. src
+
+Build Command
+npm install --production=false && npm run build:client
+
+Start Command
+npm start
+
+Instance Type
+Free
+
+Environment Variables
+из файла .env
+
+Нажимаю Deploy Web Service
+
 
 
 
 
 npm run deploy:full
 npm run dev:server
+npm run dev:client 
 npm run test
 npm run lint
 npm run lint -- --fix
