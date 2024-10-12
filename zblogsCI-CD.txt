@@ -183,5 +183,8 @@ npm run deploy:full
 npm run dev:server
 npm run dev:client 
 npm run test
+npm run test:client
+npm run test:server
+npm run test:e2e
 npm run lint
 npm run lint -- --fix

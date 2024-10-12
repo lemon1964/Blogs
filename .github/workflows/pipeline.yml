@@ -59,6 +59,24 @@ jobs:
     #     run: npm run test:client
     #     id: test-check-client
 
+      - name: Set up MongoDB
+        uses: supercharge/mongodb-github-action@1.5.0
+        with:
+          mongodb-version: '5.0'
+
+      - name: Start Server
+        run: npm run dev:server &
+        env:
+          NODE_ENV: test
+          background: true
+
+      - name: Wait for server to start
+        run: |
+          until curl -s http://localhost:3003/api/health; do
+            echo "Waiting for server to start..."
+            sleep 5
+          done
+
       - name: Test Server
         run: npm run test:server
         id: test-check-server
