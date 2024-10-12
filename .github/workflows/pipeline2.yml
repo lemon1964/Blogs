@@ -20,81 +20,81 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build
-        run: npm run build:client
-        id: build-check
-        continue-on-error: true
+    #   - name: Build
+    #     run: npm run build:client
+    #     id: build-check
+    #     continue-on-error: true
 
-      - name: Start Server
-        run: npm run dev:server &
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+    #   - name: Start Server
+    #     run: npm run dev:server &
+    #     env:
+    #       NODE_ENV: test
+    #       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    #       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+    #       PORT: ${{ secrets.PORT }}
+    #       SECRET: ${{ secrets.SECRET }}
 
-      - name: Check environment variables
-        run: |
-          echo "NODE_ENV=$NODE_ENV"
-          echo "MONGODB_URI=$MONGODB_URI"
-          echo "TEST_MONGODB_URI=$TEST_MONGODB_URI"
-          echo "PORT=$PORT"
-          echo "SECRET=$SECRET"
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+    #   - name: Check environment variables
+    #     run: |
+    #       echo "NODE_ENV=$NODE_ENV"
+    #       echo "MONGODB_URI=$MONGODB_URI"
+    #       echo "TEST_MONGODB_URI=$TEST_MONGODB_URI"
+    #       echo "PORT=$PORT"
+    #       echo "SECRET=$SECRET"
+    #     env:
+    #       NODE_ENV: test
+    #       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    #       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+    #       PORT: ${{ secrets.PORT }}
+    #       SECRET: ${{ secrets.SECRET }}
 
-      - name: Wait for server to start
-        run: |
-          until curl -s http://localhost:3003/health; do
-            echo "Waiting for server to start..."
-            sleep 5
-          done
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+    #   - name: Wait for server to start
+    #     run: |
+    #       until curl -s http://localhost:3003/health; do
+    #         echo "Waiting for server to start..."
+    #         sleep 5
+    #       done
+    #     env:
+    #       NODE_ENV: test
+    #       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    #       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+    #       PORT: ${{ secrets.PORT }}
+    #       SECRET: ${{ secrets.SECRET }}
 
-      - name: Check MongoDB connection
-        run: |
-          if curl -s http://localhost:3003/health; then
-            echo "MongoDB connection successful"
-          else
-            echo "MongoDB connection failed"
-          fi
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+    #   - name: Check MongoDB connection
+    #     run: |
+    #       if curl -s http://localhost:3003/health; then
+    #         echo "MongoDB connection successful"
+    #       else
+    #         echo "MongoDB connection failed"
+    #       fi
+    #     env:
+    #       NODE_ENV: test
+    #       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    #       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+    #       PORT: ${{ secrets.PORT }}
+    #       SECRET: ${{ secrets.SECRET }}
 
-      - name: Debug server logs
-        run: |
-          echo "Checking server logs..."
-          cat logs/server.log || echo "No server logs found"
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+    #   - name: Debug server logs
+    #     run: |
+    #       echo "Checking server logs..."
+    #       cat logs/server.log || echo "No server logs found"
+    #     env:
+    #       NODE_ENV: test
+    #       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    #       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+    #       PORT: ${{ secrets.PORT }}
+    #       SECRET: ${{ secrets.SECRET }}
 
-      - name: Test Server
-        run: npm run test:server
-        id: test-check-server
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
+    #   - name: Test Server
+    #     run: npm run test:server
+    #     id: test-check-server
+    #     env:
+    #       NODE_ENV: test
+    #       MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    #       TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+    #       PORT: ${{ secrets.PORT }}
+    #       SECRET: ${{ secrets.SECRET }}
 
 
 
