@@ -98,3 +98,7 @@ jobs:
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
           PORT: ${{ secrets.PORT }}
           SECRET: ${{ secrets.SECRET }}
+
+      - name: Test Server
+        run: npm run test:server
+        # id: test-check-server
