@@ -64,6 +64,243 @@ describe('Backend testing', () => {
     })
   })
 
+  describe('adding, deleting and updating a blog', () => {
+    test('adding a valid block with status code 201', async () => {
+      await User.deleteMany({})
+
+      const newUser = {
+        username: 'bob',
+        name: 'pickachu',
+        password: 'devil'
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDb()
+      const userInDb = usersAtEnd[0]
+
+      const token = jwt.sign(
+        { username: userInDb.username, id: userInDb.id },
+        config.SECRET
+      )
+      const decodedToken = jwt.verify(token, config.SECRET)
+
+      const user = await User.findOne({ username: decodedToken.username })
+
+      const newBlog = {
+        title: 'Testing with Supertest',
+        author: 'Supertest',
+        url: 'http://www.supertest.com',
+        likes: 7,
+        user: user._id
+      }
+
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+      const contents = blogsAtEnd.map((n) => n.title)
+      assert.strictEqual(contents.includes('Testing with Supertest'), true)
+
+      const blog = blogsAtEnd.find((n) => n.title === 'Testing with Supertest')
+      const userBlog = await User.findById(blog.user)
+      // check to ensure the blog has the created user
+      assert.strictEqual(blog.user.toString(), userBlog._id.toString())
+      // check to ensure the user has the created blog
+      assert(
+        userBlog.blogs
+          .map((blogId) => blogId.toString())
+          .includes(blog.id.toString())
+      )
+    })
+
+    test('adding blog if token not provided', async () => {
+      await User.deleteMany({})
+
+      const newUser = {
+        username: 'bob',
+        name: 'pickachu',
+        password: 'devil'
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDb()
+      const userInDb = usersAtEnd[0]
+
+      const newBlog = {
+        title: 'Token is not provided',
+        author: 'WrongToken',
+        url: 'http://www.wrongtoken.com',
+        likes: 7,
+        user: userInDb._id
+      }
+
+      const result = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(401)
+        .expect('Content-Type', /application\/json/)
+
+      assert.strictEqual(result.body.error, 'token invalid')
+    })
+
+    test('deleted with status code 204 if ID and token are valid', async () => {
+      await User.deleteMany({})
+
+      const newUser = {
+        username: 'bob',
+        name: 'pickachu',
+        password: 'devil'
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDb()
+      const userInDb = usersAtEnd[0]
+
+      const token = jwt.sign(
+        { username: userInDb.username, id: userInDb.id },
+        config.SECRET
+      )
+      const decodedToken = jwt.verify(token, config.SECRET)
+
+      const user = await User.findOne({ username: decodedToken.username })
+
+      const newBlog = {
+        title: 'Check for blog deletion',
+        author: 'Delete',
+        url: 'http://www.deletion.com',
+        likes: 7,
+        user: user._id
+      }
+
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart.find(
+        (blog) => blog.title === 'Check for blog deletion'
+      )
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+
+      const title = blogsAtEnd.map((r) => r.title)
+      assert(!title.includes(blogToDelete.title))
+    })
+
+    test('updated with status code 200 if ID and token are valid', async () => {
+      await User.deleteMany({})
+
+      const newUser = {
+        username: 'bob',
+        name: 'pickachu',
+        password: 'devil'
+      }
+
+      await api
+        .post('/api/users')
+        .send(newUser)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const usersAtEnd = await helper.usersInDb()
+      const userInDb = usersAtEnd[0]
+
+      const token = jwt.sign(
+        { username: userInDb.username, id: userInDb.id },
+        config.SECRET
+      )
+      const decodedToken = jwt.verify(token, config.SECRET)
+
+      const user = await User.findOne({ username: decodedToken.username })
+
+      const newBlog = {
+        title: 'Check for blog update',
+        author: 'Update',
+        url: 'http://www.update.com',
+        likes: 7,
+        user: user._id
+      }
+
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToUpdate = blogsAtStart.find(
+        (blog) => blog.title === 'Check for blog update'
+      )
+
+      const updatedBlog = {
+        title: blogToUpdate.title,
+        author: blogToUpdate.author,
+        url: blogToUpdate.url,
+        likes: blogToUpdate.likes + 3,
+        user: blogToUpdate.user
+      }
+
+      const result = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send(updatedBlog)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+      const likes = blogsAtEnd.map((r) => r.likes)
+      assert(likes.includes(blogToUpdate.likes + 3))
+      assert.strictEqual(result.body.likes, updatedBlog.likes)
+
+      const updatedBlogInDb = blogsAtEnd.find(
+        (blog) => blog.id === blogToUpdate.id
+      )
+      assert.strictEqual(updatedBlogInDb.likes, updatedBlog.likes)
+      assert.strictEqual(updatedBlogInDb.title, updatedBlog.title)
+      assert.strictEqual(updatedBlogInDb.author, updatedBlog.author)
+      assert.strictEqual(updatedBlogInDb.url, updatedBlog.url)
+      assert.strictEqual(
+        updatedBlogInDb.user.toString(),
+        updatedBlog.user.toString()
+      )
+    })
+  })
+
   // Always last test to close the database connection
   // test('zz_close database connection', async () => {
   //   console.log('Closing database connection...')
