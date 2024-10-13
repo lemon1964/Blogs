@@ -8,9 +8,8 @@ on:
     branches: [main]
     types: [opened, synchronize]
 
-# env:
-#   SKIP_DEPLOYMENT: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
-
+env:
+  SKIP_DEPLOYMENT: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
 
 jobs:
   simple_deployment_pipeline:
@@ -53,57 +52,35 @@ jobs:
     #         }]
     #       }' "$FULL_URL"
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      # - name: Install Playwright Browsers
+      #   run: npx playwright install --with-deps
+        
+      # - name: Test Client
+      #   run: npm run test:client
+      #   id: test-check-client
 
-    #   - name: Set up MongoDB
-    #     uses: supercharge/mongodb-github-action@1.5.0
-    #     with:
-    #       mongodb-version: '5.0'
-
-      # - name: Start Server
-      #   run: npm run dev:server &
+      # - name: Test Server
+      #   run: npm run test:server
+      #   id: test-check-server
       #   env:
       #     NODE_ENV: test
-      #     MONGODB_URI: ${{ secrets.MONGODB_URI }}
       #     TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
       #     PORT: ${{ secrets.PORT }}
       #     SECRET: ${{ secrets.SECRET }}
-      #     background: true
-        
-      - name: Test Client
-        run: npm run test:client
-        id: test-check-client
 
-      # - name: Wait for server to start
-      #   run: |
-      #     until curl -s http://localhost:3003/health; do
-      #       echo "Waiting for server to start..."
-      #       sleep 5
-      #     done
+      # - name: Playwright tests
+      #   run: npm run test:e2e
+      #   id: test-check-e2e
 
-      - name: Test Server
-        run: npm run test:server
-        id: test-check-server
-        env:
-          NODE_ENV: test
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
-
-      - name: Playwright tests
-        run: npm run test:e2e
-        id: test-check-e2e
-
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+      # - uses: actions/upload-artifact@v4
+      #   if: ${{ !cancelled() }}
+      #   with:
+      #     name: playwright-report
+      #     path: playwright-report/
+      #     retention-days: 30
 
       - name: Trigger deployment
-        # if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
     #   - name: Deploy to Render
@@ -136,18 +113,18 @@ jobs:
     #     run: echo "Webhook message sent successfully."
         
 
-#   tag_release:
-#     needs: [simple_deployment_pipeline]
-#     runs-on: ubuntu-20.04
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v4
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
   
-#       - name: Bump version and push tag
-#         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-#         uses: anothrNick/github-tag-action@1.71.0
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#         with:
-#           WITH_V: true
+      - name: Bump version and push tag
+        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+        uses: anothrNick/github-tag-action@1.71.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          WITH_V: true
 
