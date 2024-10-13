@@ -190,7 +190,7 @@ WEBHOOK_PATH
         id: build-check
 
         - name: Build
-        run: TEST_ENV=invalid npm run build:client
+        run: npm run build:client -- --nonexistent-flag
         id: build-check
 
 
