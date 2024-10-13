@@ -52,6 +52,20 @@ jobs:
             }]
           }' "$FULL_URL"
 
+      - name: Start Local Server
+        run: |
+          npm run dev:server &
+          echo $! > server.pid  # Сохранение PID процесса
+        id: start-server
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          PORT: 3003  # Используем порт 3003 для локального сервера
+          SECRET: ${{ secrets.SECRET }}
+
+      - name: Wait for Local Server to be ready
+        run: npx wait-on http://localhost:3003
+        id: wait-server
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
         
@@ -65,7 +79,7 @@ jobs:
         env:
           NODE_ENV: test
           TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
+          PORT: 3004
           SECRET: ${{ secrets.SECRET }}
 
       - name: Playwright tests
@@ -78,6 +92,10 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Stop Local Server
+        run: kill $(cat server.pid)
+        if: always()
 
       - name: Trigger deployment
         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
