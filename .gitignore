@@ -23,3 +23,6 @@ server/public/
 
 # Vite specific
 dist/
+
+# vscode
+.vscode
