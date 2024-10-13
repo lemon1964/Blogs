@@ -28,7 +28,7 @@ jobs:
         id: lint-check
 
       - name: Build
-        run: npm run build:client -- --nonexistent-flag
+        run: npm run build:client
         id: build-check
         continue-on-error: true
 
