@@ -28,29 +28,29 @@ jobs:
         id: lint-check
 
       - name: Build
-        run: npm run build:client
+        run: TEST_ENV=invalid npm run build:client
         id: build-check
         continue-on-error: true
 
-    #   - name: Build Failure Notification
-    #     if: steps.build-check.outcome == 'failure'
-    #     run: |
-    #       BASE_URL="${{ secrets.BASE_URL }}"
-    #       WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
-    #       FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-    #       CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
-    #       curl -X POST -H "Content-Type: application/json" -d '{
-    #         "username": "lemon196417",
-    #         "content": "Build Failure Detected",
-    #         "embeds": [{
-    #           "title": "Build Failure",
-    #           "description": "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build. You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.",
-    #           "color": 15158332,
-    #           "footer": {
-    #             "text": "Severity: Error • '"$CURRENT_TIME"'"
-    #           }
-    #         }]
-    #       }' "$FULL_URL"
+      - name: Build Failure Notification
+        if: steps.build-check.outcome == 'failure'
+        run: |
+          BASE_URL="${{ secrets.BASE_URL }}"
+          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+          CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "username": "lemon196417",
+            "content": "Build Failure Detected",
+            "embeds": [{
+              "title": "Build Failure",
+              "description": "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build. You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.",
+              "color": 15158332,
+              "footer": {
+                "text": "Severity: Error • '"$CURRENT_TIME"'"
+              }
+            }]
+          }' "$FULL_URL"
 
       # - name: Install Playwright Browsers
       #   run: npx playwright install --with-deps
