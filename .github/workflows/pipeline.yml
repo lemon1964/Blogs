@@ -23,37 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Set Lint Status to Pending
-        run: |
-          curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{"state": "pending", "context": "lint-check", "description": "Linting in progress"}' \
-          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
-
-
       - name: Lint
         run: npm run lint
         id: lint-check
-
-      - name: Set Lint Status (Success)
-        if: success()
-        run: |
-          curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{"state": "success", "context": "lint-check", "description": "Linting passed"}' \
-          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
-
-      - name: Set Lint Status (Failure)
-        if: failure()
-        run: |
-          curl -X POST \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          -H "Content-Type: application/json" \
-          -d '{"state": "failure", "context": "lint-check", "description": "Linting failed"}' \
-          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
-
 
       - name: Build
         run: npm run build:client
