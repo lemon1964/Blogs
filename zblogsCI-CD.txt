@@ -173,7 +173,11 @@ npm run deploy:full
 Настраиваем линт, тесты, триггер деплоя.
 Проверяем '/health' - да/с ошибкой
 ---------------------
-рр
+git checkout -b develop
+git branch 
+git add .
+git commit -m "develop Changes"
+git push origin develop
 
 
 
