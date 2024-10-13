@@ -12,7 +12,7 @@ module.exports = {
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
     'plugin:vitest-globals/recommended',
-    'plugin:prettier/recommended' // prettier
+    'plugin:prettier/recommended'
   ],
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   settings: {
@@ -22,7 +22,7 @@ module.exports = {
   },
   plugins: ['react-refresh', '@stylistic/js'],
   rules: {
-    'prettier/prettier': 'error', // prettier
+    'prettier/prettier': 'error',
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
