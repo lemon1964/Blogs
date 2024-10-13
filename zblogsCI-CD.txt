@@ -174,7 +174,7 @@ npm run deploy:full
 
 Проверяем '/health' - да/с ошибкой
 
-
+рр
 
 git add .
 git commit -m "Changes"
