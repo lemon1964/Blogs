@@ -168,6 +168,13 @@ git push origin main
 
 .github/workflows/pipeline.yml
 npm run deploy:full
+---------------------
+Добавляем в секреты гита секреты .env
+Настраиваем линт, тесты, триггер деплоя.
+
+Проверяем '/health' - да/с ошибкой
+
+
 
 git add .
 git commit -m "Changes"
