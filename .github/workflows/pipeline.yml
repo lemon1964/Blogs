@@ -59,7 +59,7 @@ jobs:
         id: start-server
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          PORT: 3003  # Используем порт 3003 для локального сервера
+          PORT: 3003
           SECRET: ${{ secrets.SECRET }}
 
       - name: Wait for Local Server to be ready
@@ -107,28 +107,28 @@ jobs:
           echo "Deploying to Render"
           git push https://github.com/lemon1964/Blogs.git HEAD:main
 
-      - name: Send Discord Notification on Successful Deployment
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        run: |
-          BASE_URL="${{ secrets.BASE_URL }}"
-          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
-          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-          CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
-          curl -X POST -H "Content-Type: application/json" -d '{
-            "username": "lemon196417",
-            "content": "A new version of Blogs has deployed!",
-            "embeds": [{
-              "title": "Deployment Details",
-              "description": "Deployed to [lemon1964-Blogs-render](https://blogs-jaml.onrender.com/) by lemon1964",
-              "color": 3066993,
-              "footer": {
-                "text": "Severity: Informational • '"$CURRENT_TIME"'"
-              }
-            }]
-          }' "$FULL_URL"
+      # - name: Send Discord Notification on Successful Deployment
+      #   if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+      #   run: |
+      #     BASE_URL="${{ secrets.BASE_URL }}"
+      #     WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+      #     FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+      #     CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+      #     curl -X POST -H "Content-Type: application/json" -d '{
+      #       "username": "lemon196417",
+      #       "content": "A new version of Blogs has deployed!",
+      #       "embeds": [{
+      #         "title": "Deployment Details",
+      #         "description": "Deployed to [lemon1964-Blogs-render](https://blogs-jaml.onrender.com/) by lemon1964",
+      #         "color": 3066993,
+      #         "footer": {
+      #           "text": "Severity: Informational • '"$CURRENT_TIME"'"
+      #         }
+      #       }]
+      #     }' "$FULL_URL"
         
-      - name: Log Webhook Result
-        run: echo "Webhook message sent successfully."
+      # - name: Log Webhook Result
+      #   run: echo "Webhook message sent successfully."
         
 
   tag_release:
