@@ -171,19 +171,18 @@ npm run deploy:full
 ---------------------
 Добавляем в секреты гита секреты .env
 Настраиваем линт, тесты, триггер деплоя.
-
 Проверяем '/health' - да/с ошибкой
-
+---------------------
 рр
+
+
+
+
 
 git add .
 git commit -m "Changes"
 git push
 git push origin main
-
-
-
-
 
 
 npm run deploy:full

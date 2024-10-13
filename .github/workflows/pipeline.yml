@@ -4,9 +4,9 @@ on:
   push:
     branches:
       - main
-  # pull_request:
-  #   branches: [main]
-  #   types: [opened, synchronize]
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
 
 # env:
 #   SKIP_DEPLOYMENT: ${{ contains(join(github.event.commits.*.message, ' '), '#skip') }}
@@ -61,15 +61,15 @@ jobs:
     #     with:
     #       mongodb-version: '5.0'
 
-      - name: Start Server
-        run: npm run dev:server &
-        env:
-          NODE_ENV: test
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          SECRET: ${{ secrets.SECRET }}
-          background: true
+      # - name: Start Server
+      #   run: npm run dev:server &
+      #   env:
+      #     NODE_ENV: test
+      #     MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      #     TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+      #     PORT: ${{ secrets.PORT }}
+      #     SECRET: ${{ secrets.SECRET }}
+      #     background: true
         
       - name: Test Client
         run: npm run test:client
