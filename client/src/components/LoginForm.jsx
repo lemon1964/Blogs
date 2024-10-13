@@ -14,8 +14,7 @@ const LoginForm = () => {
   useEffect(() => {
     dispatch(
       showNotification(
-        'Read and create blogs, like for the best ones. Please log in',
-        'common',
+        'Read and create blogs, like for the best ones. Please log in. You can log in using the username "admin" and the password "admin".',
         5
       )
     )
