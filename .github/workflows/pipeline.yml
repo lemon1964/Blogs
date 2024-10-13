@@ -32,52 +32,70 @@ jobs:
         id: build-check
         continue-on-error: true
 
-    #   - name: Build Failure Notification
-    #     if: steps.build-check.outcome == 'failure'
-    #     run: |
-    #       BASE_URL="${{ secrets.BASE_URL }}"
-    #       WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
-    #       FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-    #       CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
-    #       curl -X POST -H "Content-Type: application/json" -d '{
-    #         "username": "lemon196417",
-    #         "content": "Build Failure Detected",
-    #         "embeds": [{
-    #           "title": "Build Failure",
-    #           "description": "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build. You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.",
-    #           "color": 15158332,
-    #           "footer": {
-    #             "text": "Severity: Error • '"$CURRENT_TIME"'"
-    #           }
-    #         }]
-    #       }' "$FULL_URL"
+      - name: Build Failure Notification
+        if: steps.build-check.outcome == 'failure'
+        run: |
+          BASE_URL="${{ secrets.BASE_URL }}"
+          WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+          FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+          CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+          curl -X POST -H "Content-Type: application/json" -d '{
+            "username": "lemon196417",
+            "content": "Build Failure Detected",
+            "embeds": [{
+              "title": "Build Failure",
+              "description": "Commit [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build. You can view the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for more details.",
+              "color": 15158332,
+              "footer": {
+                "text": "Severity: Error • '"$CURRENT_TIME"'"
+              }
+            }]
+          }' "$FULL_URL"
 
-      # - name: Install Playwright Browsers
-      #   run: npx playwright install --with-deps
+      - name: Start Local Server
+        run: |
+          npm run dev:server &
+          echo $! > server.pid  # Сохранение PID процесса
+        id: start-server
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          PORT: 3003  # Используем порт 3003 для локального сервера
+          SECRET: ${{ secrets.SECRET }}
+
+      - name: Wait for Local Server to be ready
+        run: npx wait-on http://localhost:3003
+        id: wait-server
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
         
-      # - name: Test Client
-      #   run: npm run test:client
-      #   id: test-check-client
+      - name: Test Client
+        run: npm run test:client
+        id: test-check-client
 
-      # - name: Test Server
-      #   run: npm run test:server
-      #   id: test-check-server
-      #   env:
-      #     NODE_ENV: test
-      #     TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-      #     PORT: ${{ secrets.PORT }}
-      #     SECRET: ${{ secrets.SECRET }}
+      - name: Test Server
+        run: npm run test:server
+        id: test-check-server
+        env:
+          NODE_ENV: test
+          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+          PORT: 3004
+          SECRET: ${{ secrets.SECRET }}
 
-      # - name: Playwright tests
-      #   run: npm run test:e2e
-      #   id: test-check-e2e
+      - name: Playwright tests
+        run: npm run test:e2e
+        id: test-check-e2e
 
-      # - uses: actions/upload-artifact@v4
-      #   if: ${{ !cancelled() }}
-      #   with:
-      #     name: playwright-report
-      #     path: playwright-report/
-      #     retention-days: 30
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+      - name: Stop Local Server
+        run: kill $(cat server.pid)
+        if: always()
 
       - name: Trigger deployment
         if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
