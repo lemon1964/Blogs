@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   root: 'client', // Указывает, что корень проекта - папка client
   build: {
-    outDir: '../server/public' // Укажите правильный путь для сборки клиента
+    outDir: '../server/public'
   },
   plugins: [react()],
   server: {
