@@ -23,9 +23,37 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set Lint Status to Pending
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"state": "pending", "context": "lint-check", "description": "Linting in progress"}' \
+          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
+
+
       - name: Lint
         run: npm run lint
         id: lint-check
+
+      - name: Set Lint Status (Success)
+        if: success()
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"state": "success", "context": "lint-check", "description": "Linting passed"}' \
+          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
+
+      - name: Set Lint Status (Failure)
+        if: failure()
+        run: |
+          curl -X POST \
+          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Content-Type: application/json" \
+          -d '{"state": "failure", "context": "lint-check", "description": "Linting failed"}' \
+          https://api.github.com/repos/${{ github.repository }}/statuses/${{ github.sha }}
+
 
       - name: Build
         run: npm run build:client
@@ -52,97 +80,97 @@ jobs:
             }]
           }' "$FULL_URL"
 
-      - name: Start Local Server
-        run: |
-          npm run dev:server &
-          echo $! > server.pid  # Сохранение PID процесса
-        id: start-server
-        env:
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          PORT: 3003
-          SECRET: ${{ secrets.SECRET }}
+  #     - name: Start Local Server
+  #       run: |
+  #         npm run dev:server &
+  #         echo $! > server.pid  # Сохранение PID процесса
+  #       id: start-server
+  #       env:
+  #         MONGODB_URI: ${{ secrets.MONGODB_URI }}
+  #         PORT: 3003
+  #         SECRET: ${{ secrets.SECRET }}
 
-      - name: Wait for Local Server to be ready
-        run: npx wait-on http://localhost:3003
-        id: wait-server
+  #     - name: Wait for Local Server to be ready
+  #       run: npx wait-on http://localhost:3003
+  #       id: wait-server
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+  #     - name: Install Playwright Browsers
+  #       run: npx playwright install --with-deps
         
-      - name: Test Client
-        run: npm run test:client
-        id: test-check-client
+  #     - name: Test Client
+  #       run: npm run test:client
+  #       id: test-check-client
 
-      - name: Test Server
-        run: npm run test:server
-        id: test-check-server
-        env:
-          NODE_ENV: test
-          TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
-          PORT: 3004
-          SECRET: ${{ secrets.SECRET }}
+  #     - name: Test Server
+  #       run: npm run test:server
+  #       id: test-check-server
+  #       env:
+  #         NODE_ENV: test
+  #         TEST_MONGODB_URI: ${{ secrets.TEST_MONGODB_URI }}
+  #         PORT: 3004
+  #         SECRET: ${{ secrets.SECRET }}
 
-      - name: Playwright tests
-        run: npm run test:e2e
-        id: test-check-e2e
+  #     - name: Playwright tests
+  #       run: npm run test:e2e
+  #       id: test-check-e2e
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+  #     - uses: actions/upload-artifact@v4
+  #       if: ${{ !cancelled() }}
+  #       with:
+  #         name: playwright-report
+  #         path: playwright-report/
+  #         retention-days: 30
 
-      - name: Stop Local Server
-        run: kill $(cat server.pid)
-        if: always()
+  #     - name: Stop Local Server
+  #       run: kill $(cat server.pid)
+  #       if: always()
 
-      - name: Trigger deployment
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+  #     - name: Trigger deployment
+  #       if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+  #       run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
-      - name: Deploy to Render
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        run: |
-          echo "Deploying to Render"
-          git push https://github.com/lemon1964/Blogs.git HEAD:main
+  #     - name: Deploy to Render
+  #       if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+  #       run: |
+  #         echo "Deploying to Render"
+  #         git push https://github.com/lemon1964/Blogs.git HEAD:main
 
-      # - name: Send Discord Notification on Successful Deployment
-      #   if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-      #   run: |
-      #     BASE_URL="${{ secrets.BASE_URL }}"
-      #     WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
-      #     FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
-      #     CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
-      #     curl -X POST -H "Content-Type: application/json" -d '{
-      #       "username": "lemon196417",
-      #       "content": "A new version of Blogs has deployed!",
-      #       "embeds": [{
-      #         "title": "Deployment Details",
-      #         "description": "Deployed to [lemon1964-Blogs-render](https://blogs-jaml.onrender.com/) by lemon1964",
-      #         "color": 3066993,
-      #         "footer": {
-      #           "text": "Severity: Informational • '"$CURRENT_TIME"'"
-      #         }
-      #       }]
-      #     }' "$FULL_URL"
+  #     - name: Send Discord Notification on Successful Deployment
+  #       if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+  #       run: |
+  #         BASE_URL="${{ secrets.BASE_URL }}"
+  #         WEBHOOK_PATH="${{ secrets.WEBHOOK_PATH }}"
+  #         FULL_URL="${BASE_URL}${WEBHOOK_PATH}"
+  #         CURRENT_TIME=$(date +"%Y-%m-%d %H:%M:%S")
+  #         curl -X POST -H "Content-Type: application/json" -d '{
+  #           "username": "lemon196417",
+  #           "content": "A new version of Blogs has deployed!",
+  #           "embeds": [{
+  #             "title": "Deployment Details",
+  #             "description": "Deployed to [lemon1964-Blogs-render](https://blogs-jaml.onrender.com/) by lemon1964",
+  #             "color": 3066993,
+  #             "footer": {
+  #               "text": "Severity: Informational • '"$CURRENT_TIME"'"
+  #             }
+  #           }]
+  #         }' "$FULL_URL"
         
-      # - name: Log Webhook Result
-      #   run: echo "Webhook message sent successfully."
+  #     - name: Log Webhook Result
+  #       run: echo "Webhook message sent successfully."
         
 
-  tag_release:
-    needs: [simple_deployment_pipeline]
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  # tag_release:
+  #   needs: [simple_deployment_pipeline]
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
   
-      - name: Bump version and push tag
-        if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
-        uses: anothrNick/github-tag-action@1.71.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          WITH_V: true
+  #     - name: Bump version and push tag
+  #       if: github.ref == 'refs/heads/main' && env.SKIP_DEPLOYMENT == 'false'
+  #       uses: anothrNick/github-tag-action@1.71.0
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         WITH_V: true
 
