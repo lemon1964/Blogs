@@ -10,7 +10,7 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
-require('events').setMaxListeners(20) // Increasing listener limit for "creation succeeds with a fresh username" test
+require('events').setMaxListeners(20)
 
 describe('Backend testing', () => {
   // Подключение к базе данных перед выполнением тестов
